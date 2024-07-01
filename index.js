@@ -29,6 +29,7 @@ async function run() {
     await client.connect();
 
     const serviceCollection = client.db("navanaCar").collection("services");
+    const bookingCollection = client.db("navanaCar").collection("bookings");
 
     app.get("/services", async (req, res) => {
       const cursor = serviceCollection.find();
@@ -45,6 +46,21 @@ async function run() {
         projection: { title: 1, price: 1, service_id: 1 },
       };
       const result = await serviceCollection.findOne(query, options);
+      res.send(result);
+    });
+
+    // bookings
+
+    app.get("/bookings", async (req, res) => {
+      console.log(req.query);
+      const result = await bookingCollection.find().toArray();
+      res.send(result);
+    });
+
+    app.post("/bookings", async (req, res) => {
+      const booking = req.body;
+      console.log(booking);
+      const result = await bookingCollection.insertOne(booking);
       res.send(result);
     });
 
